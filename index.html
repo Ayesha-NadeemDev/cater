@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant's Catering | Soft & Elegant Wedding Culinary Experiences</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&family=Italianno&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        almond: {
+                            50: '#FFFDF9',
+                            100: '#FAF7F2', /* Primary soft warm background */
+                            200: '#F3EDE2',
+                            300: '#E6DCCD',
+                        },
+                        dustyRose: {
+                            50: '#FBF5F4',
+                            100: '#F5E9E5',
+                            200: '#E8D5CE', /* Primary soft dusty rose */
+                            300: '#D8BBB0',
+                            400: '#C59B8B', /* Muted rose gold accent */
+                            500: '#B07D6C',
+                        },
+                        sageGreen: {
+                            50: '#F4F7F3',
+                            100: '#E6EFE4',
+                            200: '#C8D6AF', /* Soft sage green */
+                            300: '#A4B889',
+                            400: '#8CA082', /* Muted sage text */
+                            500: '#687D5F',
+                        },
+                        softCharcoal: {
+                            500: '#6B6763',
+                            700: '#4A4744',
+                            800: '#3D3A37', /* Gentle dark text */
+                            900: '#2A2826',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Playfair Display', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        script: ['Italianno', 'cursive'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft-petal': '0 15px 35px -10px rgba(197, 155, 139, 0.15), 0 5px 15px -5px rgba(0, 0, 0, 0.03)',
+                        'rose-glow': '0 0 25px rgba(232, 213, 206, 0.7)',
+                        'sage-glow': '0 0 20px rgba(200, 214, 175, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8D5CE;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C59B8B;
+        }
+
+        .glass-rose {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(232, 213, 206, 0.6);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(232, 213, 206, 0.45);
+        }
+
+        @keyframes floatPetal {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(4deg); }
+        }
+        .animate-petal {
+            animation: floatPetal 6s ease-in-out infinite;
+        }
+
+        @keyframes pulseSoft {
+            0%, 100% { opacity: 0.35; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .animate-pulse-soft {
+            animation: pulseSoft 5s ease-in-out infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: 200%;
+            animation: marquee 28s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+
+<body class="bg-almond-100 text-softCharcoal-800 font-sans antialiased selection:bg-dustyRose-200 selection:text-softCharcoal-900" 
+      x-data="{ 
+        currentRoute: 'home', 
+        mobileMenu: false, 
+        activeTab: 'plated', 
+        galleryFilter: 'all',
+        selectedItem: null,
+        modalOpen: false,
+        notificationOpen: false,
+        notificationMessage: '',
+        
+        /* Slider state */
+        currentSlide: 0,
+        slides: [
+            { img: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1200&q=80', title: 'Grand Banquet Table Styling', caption: 'Elegant table scapes crafted for intimate or grand receptions.' },
+            { img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80', title: 'Artisanal Plated Steak', caption: 'Hand-carved rosemary prime rib with garlic whipped potatoes.' },
+            { img: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=1200&q=80', title: 'Decadent Mini Dessert Bar', caption: 'French macarons, fresh fruit tartlets, and gourmet sweet bites.' },
+            { img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=80', title: 'Fresh Pacific Lemon Salmon', caption: 'Pan-seared Atlantic salmon drizzled with citrus dill glaze.' },
+            { img: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80', title: 'Unforgettable Moments', caption: 'Serving Antwerp & Northwest Ohio weddings with utmost grace.' }
+        ],
+        nextSlide() { this.currentSlide = (this.currentSlide + 1) % this.slides.length; },
+        prevSlide() { this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length; },
+        
+        /* Cost Calculator logic */
+        costCalc: { 
+            guests: 120, 
+            service: 'plated', 
+            tier: 'deluxe', 
+            bar: true, 
+            desserts: true,
+            total: 0 
+        },
+
+        navigate(route) {
+            this.currentRoute = route;
+            this.mobileMenu = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+
+        showToast(msg) {
+            this.notificationMessage = msg;
+            this.notificationOpen = true;
+            setTimeout(() => { this.notificationOpen = false; }, 4500);
+        },
+
+        openModal(item) {
+            this.selectedItem = item;
+            this.modalOpen = true;
+        }
+      }"
+      x-init="
+        setInterval(() => { nextSlide(); }, 4500);
+      ">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-dustyRose-100 border-b border-dustyRose-200 text-softCharcoal-800 text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center space-x-2 sm:space-x-4">
+        <span class="bg-white/90 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wider text-dustyRose-500 uppercase border border-dustyRose-300">2026 / 2027 Wedding Season</span>
+        <span class="truncate">Now Accepting Tasting Reservations for Northwest Ohio & Beyond</span>
+        <button @click="navigate('contact')" class="hidden md:inline-block underline text-dustyRose-500 hover:text-softCharcoal-900 font-semibold transition-colors">Book Tasting</button>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 glass-rose shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <button @click="navigate('home')" class="flex flex-col items-start group text-left">
+                <span class="font-serif text-2xl sm:text-3xl font-light tracking-widest text-softCharcoal-900 group-hover:text-dustyRose-500 transition-colors">GRANT'S CATERING</span>
+                <span class="font-script text-2xl text-dustyRose-400 -mt-2.5 tracking-wider pl-0.5">Elegant Wedding Culinary Arts</span>
+            </button>
+
+            <!-- Navigation Links -->
+            <nav class="hidden lg:flex items-center space-x-7 text-xs uppercase tracking-widest font-semibold text-softCharcoal-700">
+                <button @click="navigate('home')" :class="currentRoute === 'home' ? 'text-dustyRose-500 border-b-2 border-dustyRose-400 pb-1' : 'hover:text-dustyRose-500 transition-colors'">Home</button>
+                <button @click="navigate('story')" :class="currentRoute === 'story' ? 'text-dustyRose-500 border-b-2 border-dustyRose-400 pb-1' : 'hover:text-dustyRose-500 transition-colors'">Our Craft</button>
+                <button @click="navigate('menus')" :class="currentRoute === 'menus' ? 'text-dustyRose-500 border-b-2 border-dustyRose-400 pb-1' : 'hover:text-dustyRose-500 transition-colors'">Wedding Menus</button>
+                <button @click="navigate('estimator')" :class="currentRoute === 'estimator' ? 'text-dustyRose-500 border-b-2 border-dustyRose-400 pb-1' : 'hover:text-dustyRose-500 transition-colors'">Cost Estimator</button>
+                <button @click="navigate('reviews')" :class="currentRoute === 'reviews' ? 'text-dustyRose-500 border-b-2 border-dustyRose-400 pb-1' : 'hover:text-dustyRose-500 transition-colors'">Love Stories</button>
+                <button @click="navigate('contact')" class="px-6 py-2.5 bg-dustyRose-400 text-white rounded-full hover:bg-dustyRose-500 transition-all duration-300 shadow-soft-petal text-xs font-semibold tracking-wider flex items-center gap-2">
+                    <i class="fa-regular fa-envelope text-xs"></i> Inquire Today
+                </button>
+            </nav>
+
+            <!-- Mobile Hamburger Button -->
+            <button @click="mobileMenu = !mobileMenu" class="lg:hidden text-softCharcoal-800 p-2 focus:outline-none" aria-label="Toggle Mobile Menu">
+                <i class="fa-solid" :class="mobileMenu ? 'fa-xmark text-2xl' : 'fa-bars text-xl'"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div x-show="mobileMenu" 
+             x-transition:enter="transition ease-out duration-300" 
+             x-transition:enter-start="opacity-0 -translate-y-4" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             x-transition:leave="transition ease-in duration-200" 
+             x-transition:leave-start="opacity-100 translate-y-0" 
+             x-transition:leave-end="opacity-0 -translate-y-4" 
+             class="lg:hidden glass-rose border-b border-dustyRose-200 px-6 py-6 space-y-4 text-center uppercase text-xs tracking-widest font-semibold">
+            <button @click="navigate('home')" class="block w-full py-2 text-softCharcoal-800 hover:text-dustyRose-500">Home</button>
+            <button @click="navigate('story')" class="block w-full py-2 text-softCharcoal-800 hover:text-dustyRose-500">Our Craft</button>
+            <button @click="navigate('menus')" class="block w-full py-2 text-softCharcoal-800 hover:text-dustyRose-500">Wedding Menus</button>
+            <button @click="navigate('estimator')" class="block w-full py-2 text-softCharcoal-800 hover:text-dustyRose-500">Cost Estimator</button>
+            <button @click="navigate('reviews')" class="block w-full py-2 text-softCharcoal-800 hover:text-dustyRose-500">Love Stories</button>
+            <button @click="navigate('contact')" class="block w-full py-3 bg-dustyRose-400 text-white rounded-full">Inquire Today</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- PAGE 1: HOME PAGE (Header -> Banner -> Gallery & Animated Slider -> Contact -> Footer) -->
+        <div x-show="currentRoute === 'home'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+            
+            <!-- Hero Banner Section -->
+            <section class="relative min-h-[85vh] flex items-center justify-center text-center px-4 sm:px-6 overflow-hidden">
+                <!-- Background Gradient overlay & Image -->
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80" alt="Wedding Banner Background" class="w-full h-full object-cover opacity-25">
+                    <div class="absolute inset-0 bg-gradient-to-b from-almond-100/60 via-almond-100/90 to-almond-100"></div>
+                </div>
+
+                <!-- Floating Soft Accent Circles -->
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-dustyRose-200/50 rounded-full blur-3xl pointer-events-none animate-pulse-soft"></div>
+                <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-sageGreen-200/40 rounded-full blur-3xl pointer-events-none animate-pulse-soft"></div>
+
+                <div class="max-w-4xl mx-auto z-10 py-12 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md px-5 py-2 rounded-full border border-dustyRose-200 shadow-sm animate-petal">
+                        <i class="fa-solid fa-gem text-dustyRose-400 text-xs"></i>
+                        <span class="text-xs uppercase tracking-widest text-softCharcoal-800 font-medium">Antwerp, Ohio • Wedding Culinary Specialist</span>
+                    </div>
+                    
+                    <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl text-softCharcoal-900 font-light leading-tight">
+                        Soft Elegance & <span class="italic font-script text-dustyRose-500 text-5xl sm:text-7xl md:text-8xl block -mt-2 sm:-mt-4">Unforgettable Flavors</span>
+                    </h1>
+
+                    <p class="text-softCharcoal-700 text-sm sm:text-lg max-w-2xl mx-auto font-normal leading-relaxed">
+                        Welcome to Grant's Catering. Crafting romantic culinary moments designed exclusively for wedding receptions, tastings, and rehearsal dinners.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                        <button @click="navigate('menus')" class="w-full sm:w-auto px-8 py-3.5 bg-dustyRose-400 hover:bg-dustyRose-500 text-white rounded-full font-semibold uppercase tracking-widest text-xs transition-all duration-300 shadow-soft-petal hover:shadow-rose-glow">
+                            Explore Wedding Menus
+                        </button>
+                        <button @click="navigate('estimator')" class="w-full sm:w-auto px-8 py-3.5 bg-white/90 hover:bg-white text-softCharcoal-800 rounded-full font-semibold uppercase tracking-widest text-xs border border-dustyRose-200 transition-all duration-300 shadow-sm">
+                            Calculate Budget
+                        </button>
+                    </div>
+
+                    <!-- Quick Info Ribbon -->
+                    <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto text-xs text-softCharcoal-700 font-medium">
+                        <div class="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm py-3 px-3 rounded-2xl border border-dustyRose-100 shadow-sm">
+                            <i class="fa-solid fa-location-dot text-dustyRose-400"></i> Antwerp, OH
+                        </div>
+                        <a href="tel:4192582233" class="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm py-3 px-3 rounded-2xl border border-dustyRose-100 shadow-sm hover:text-dustyRose-500 transition-colors">
+                            <i class="fa-solid fa-phone text-dustyRose-400"></i> 419-258-2233
+                        </a>
+                        <a href="https://www.facebook.com/weddingdreams12" target="_blank" class="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm py-3 px-3 rounded-2xl border border-dustyRose-100 shadow-sm hover:text-dustyRose-500 transition-colors">
+                            <i class="fa-brands fa-facebook text-dustyRose-400"></i> Facebook
+                        </a>
+                        <a href="https://www.instagram.com/grantscatering_weddings/" target="_blank" class="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm py-3 px-3 rounded-2xl border border-dustyRose-100 shadow-sm hover:text-dustyRose-500 transition-colors">
+                            <i class="fa-brands fa-instagram text-dustyRose-400"></i> Instagram
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Animated Picture Slider & Gallery Section -->
+            <section class="py-20 bg-almond-50 relative overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                    
+                    <div class="text-center max-w-3xl mx-auto space-y-3">
+                        <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold">Visual Culinary Journey</span>
+                        <h2 class="font-serif text-3xl sm:text-5xl text-softCharcoal-900 font-light">Love Diary</h2>
+                        <p class="text-softCharcoal-700 text-sm">
+                            Explore our soft table presentations, hand-crafted plated entrees, and romantic wedding moments.
+                        </p>
+                    </div>
+
+                    <!-- Main Interactive Carousel Slider -->
+                    <div class="relative max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-soft-petal border-4 border-white h-[380px] sm:h-[500px]">
+                        <template x-for="(slide, index) in slides" :key="index">
+                            <div x-show="currentSlide === index" 
+                                 x-transition:enter="transition ease-out duration-700" 
+                                 x-transition:enter-start="opacity-0 scale-95" 
+                                 x-transition:enter-end="opacity-100 scale-100" 
+                                 x-transition:leave="transition ease-in duration-500" 
+                                 x-transition:leave-start="opacity-100 scale-100" 
+                                 x-transition:leave-end="opacity-0 scale-105" 
+                                 class="absolute inset-0">
+                                <img :src="slide.img" :alt="slide.title" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-softCharcoal-900/80 via-softCharcoal-900/20 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                                    <span class="text-xs uppercase tracking-widest text-dustyRose-200 font-semibold">Featured Gallery</span>
+                                    <h3 class="font-serif text-2xl sm:text-4xl font-light" x-text="slide.title"></h3>
+                                    <p class="text-xs sm:text-sm text-white/80 max-w-xl mt-1" x-text="slide.caption"></p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Slider Navigation Controls -->
+                        <button @click="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-softCharcoal-900 rounded-full flex items-center justify-center backdrop-blur-md shadow-md transition-all">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button @click="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/80 hover:bg-white text-softCharcoal-900 rounded-full flex items-center justify-center backdrop-blur-md shadow-md transition-all">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                        <!-- Dots Indicator -->
+                        <div class="absolute bottom-4 right-6 flex space-x-2 z-20">
+                            <template x-for="(slide, index) in slides" :key="index">
+                                <button @click="currentSlide = index" :class="currentSlide === index ? 'w-8 bg-dustyRose-400' : 'w-2 bg-white/60'" class="h-2 rounded-full transition-all duration-300"></button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Filterable Animated Gallery Grid -->
+                    <div class="space-y-6 pt-6">
+                        <div class="flex justify-center gap-2">
+                            <button @click="galleryFilter = 'all'" :class="galleryFilter === 'all' ? 'bg-dustyRose-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">All Photos</button>
+                            <button @click="galleryFilter = 'setup'" :class="galleryFilter === 'setup' ? 'bg-dustyRose-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">Decor & Setups</button>
+                            <button @click="galleryFilter = 'dishes'" :class="galleryFilter === 'dishes' ? 'bg-dustyRose-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">Plated Dishes</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div x-show="galleryFilter === 'all' || galleryFilter === 'setup'" class="group relative overflow-hidden rounded-3xl border border-dustyRose-200 shadow-sm cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=600&q=80" alt="Wedding Table Setup" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-dustyRose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span class="bg-white/90 text-softCharcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow">Table Styling</span>
+                                </div>
+                            </div>
+
+                            <div x-show="galleryFilter === 'all' || galleryFilter === 'dishes'" class="group relative overflow-hidden rounded-3xl border border-dustyRose-200 shadow-sm cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Prime Rib Dish" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-dustyRose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span class="bg-white/90 text-softCharcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow">Slow-Roasted Prime Rib</span>
+                                </div>
+                            </div>
+
+                            <div x-show="galleryFilter === 'all' || galleryFilter === 'dishes'" class="group relative overflow-hidden rounded-3xl border border-dustyRose-200 shadow-sm cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=600&q=80" alt="Gourmet Desserts" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-dustyRose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span class="bg-white/90 text-softCharcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow">Dessert Display</span>
+                                </div>
+                            </div>
+
+                            <div x-show="galleryFilter === 'all' || galleryFilter === 'setup'" class="group relative overflow-hidden rounded-3xl border border-dustyRose-200 shadow-sm cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=600&q=80" alt="Reception Hall" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-dustyRose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span class="bg-white/90 text-softCharcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow">Reception Hall</span>
+                                </div>
+                            </div>
+
+                            <div x-show="galleryFilter === 'all' || galleryFilter === 'dishes'" class="group relative overflow-hidden rounded-3xl border border-dustyRose-200 shadow-sm cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80" alt="Salmon Filet" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-dustyRose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span class="bg-white/90 text-softCharcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow">Pan-Seared Salmon</span>
+                                </div>
+                            </div>
+
+                            <div x-show="galleryFilter === 'all' || galleryFilter === 'setup'" class="group relative overflow-hidden rounded-3xl border border-dustyRose-200 shadow-sm cursor-pointer">
+                                <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=600&q=80" alt="Floral Details" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-dustyRose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span class="bg-white/90 text-softCharcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow">Floral Accents</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Inquiry Section on Home Page -->
+            <section class="py-20 bg-almond-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        
+                        <!-- Left Details -->
+                        <div class="lg:col-span-5 space-y-6">
+                            <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold">Reserve Your Date</span>
+                            <h2 class="font-serif text-3xl sm:text-5xl text-softCharcoal-900 font-light">Start Your Tasting Journey</h2>
+                            <p class="text-xs sm:text-sm text-softCharcoal-700 leading-relaxed">
+                                We cater weddings throughout Antwerp, Fort Wayne, Defiance, and surrounding areas. Contact us today to check date availability and schedule your tasting session.
+                            </p>
+
+                            <div class="space-y-4 pt-2">
+                                <div class="flex items-center space-x-4 p-4 rounded-2xl bg-white border border-dustyRose-200">
+                                    <div class="w-10 h-10 bg-dustyRose-100 rounded-full flex items-center justify-center text-dustyRose-500">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] uppercase font-bold text-softCharcoal-500 tracking-wider block">Call Direct</span>
+                                        <a href="tel:4192582233" class="text-sm font-semibold text-softCharcoal-900 hover:text-dustyRose-500">419-258-2233</a>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4 p-4 rounded-2xl bg-white border border-dustyRose-200">
+                                    <div class="w-10 h-10 bg-dustyRose-100 rounded-full flex items-center justify-center text-dustyRose-500">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] uppercase font-bold text-softCharcoal-500 tracking-wider block">Email Us</span>
+                                        <a href="mailto:info@grantscatering.com" class="text-sm font-semibold text-softCharcoal-900 hover:text-dustyRose-500">info@grantscatering.com</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Form -->
+                        <div class="lg:col-span-7 bg-white p-6 sm:p-10 rounded-3xl border border-dustyRose-200 shadow-soft-petal">
+                            <form @submit.prevent="showToast('Thank you! Your inquiry has been sent to Grant\'s Catering. We will contact you within 24 hours.')" class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Your Name</label>
+                                        <input type="text" required placeholder="Bride / Groom Name" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Phone Number</label>
+                                        <input type="tel" required placeholder="419-000-0000" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Wedding Date</label>
+                                        <input type="date" required class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Guest Count</label>
+                                        <input type="number" placeholder="120" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Message or Questions</label>
+                                    <textarea rows="3" placeholder="Tell us about your wedding style or catering ideas..." class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50"></textarea>
+                                </div>
+
+                                <button type="submit" class="w-full py-3.5 bg-dustyRose-400 hover:bg-dustyRose-500 text-white rounded-full text-xs font-semibold uppercase tracking-wider transition-all shadow-soft-petal">
+                                    Submit Home Inquiry
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PAGE 2: OUR CRAFT / STORY PAGE -->
+        <div x-show="currentRoute === 'story'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="py-16 bg-almond-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold">Our Dedicated Story</span>
+                    <h2 class="font-serif text-4xl sm:text-6xl text-softCharcoal-900 font-light">Crafting Wedding Dreams Since Day One</h2>
+                    <p class="text-softCharcoal-700 text-sm sm:text-base leading-relaxed">
+                        Located at 503 E Canal St in Antwerp, Ohio, Grant's Catering brings heartfelt warmth and seamless perfection to wedding dining.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="rounded-3xl overflow-hidden border-4 border-white shadow-soft-petal">
+                        <img src="https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=800&q=80" alt="Grant's Catering Culinary Team" class="w-full h-[450px] object-cover">
+                    </div>
+
+                    <div class="space-y-6">
+                        <h3 class="font-serif text-3xl text-softCharcoal-900">Tailored Menu Creation & Flawless Execution</h3>
+                        <p class="text-xs sm:text-sm text-softCharcoal-700 leading-relaxed">
+                            We believe that every love story deserves a unique culinary backdrop. From soft family-style dinner service to grand interactive buffet displays, our chefs prepare every sauce, side, and main entree from scratch.
+                        </p>
+                        <p class="text-xs sm:text-sm text-softCharcoal-700 leading-relaxed">
+                            Our team works closely with brides, grooms, and wedding planners across Ohio and Indiana to handle setup, serving, dietary customizations, and post-reception cleanup.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-4 pt-4">
+                            <div class="bg-white p-4 rounded-2xl border border-dustyRose-200">
+                                <i class="fa-solid fa-seedling text-sageGreen-400 text-xl mb-2"></i>
+                                <h4 class="font-serif text-lg font-semibold text-softCharcoal-900">Fresh Ingredients</h4>
+                                <p class="text-xs text-softCharcoal-600 mt-1">Locally sourced produce and premium cut meats.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-dustyRose-200">
+                                <i class="fa-solid fa-heart text-dustyRose-400 text-xl mb-2"></i>
+                                <h4 class="font-serif text-lg font-semibold text-softCharcoal-900">Tasting Sessions</h4>
+                                <p class="text-xs text-softCharcoal-600 mt-1">Private menu tasting prior to your big day.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: WEDDING MENUS PAGE -->
+        <div x-show="currentRoute === 'menus'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="py-16 bg-almond-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold">Customizable Options</span>
+                    <h2 class="font-serif text-4xl sm:text-6xl text-softCharcoal-900 font-light">Dedicated Wedding Menus</h2>
+                    <p class="text-softCharcoal-700 text-sm">Select a category below and click any menu item for full ingredient breakdowns.</p>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                    <button @click="activeTab = 'plated'" :class="activeTab === 'plated' ? 'bg-dustyRose-400 text-white shadow-soft-petal' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">
+                        Plated Dinners
+                    </button>
+                    <button @click="activeTab = 'buffet'" :class="activeTab === 'buffet' ? 'bg-dustyRose-400 text-white shadow-soft-petal' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">
+                        Wedding Buffets
+                    </button>
+                    <button @click="activeTab = 'hors'" :class="activeTab === 'hors' ? 'bg-dustyRose-400 text-white shadow-soft-petal' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">
+                        Hors d'Oeuvres
+                    </button>
+                    <button @click="activeTab = 'desserts'" :class="activeTab === 'desserts' ? 'bg-dustyRose-400 text-white shadow-soft-petal' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all">
+                        Late Night & Desserts
+                    </button>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <template x-if="activeTab === 'plated'">
+                        <div class="contents">
+                            <div @click="openModal({ title: 'Rosemary Prime Rib', category: 'Plated Main', desc: 'Hand-carved slow roasted prime rib with garlic au jus, served with creamy roasted garlic mashed potatoes and grilled asparagus.', tags: ['Gluten-Free Option', 'Chef Favorite'], img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-dustyRose-400 tracking-wider bg-dustyRose-100 px-2.5 py-1 rounded-full">Plated Entrée</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 transition-colors mt-3">Rosemary Slow-Roasted Prime Rib</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2 leading-relaxed">Hand-carved succulent prime rib with rich rosemary au jus and garlic-whipped Yukon potatoes.</p>
+                            </div>
+
+                            <div @click="openModal({ title: 'Pan-Seared Lemon Salmon', category: 'Plated Main', desc: 'Fresh Atlantic salmon filet with lemon dill reduction, wild rice pilaf, and seasoned broccolini.', tags: ['Gluten-Free', 'Pescatarian'], img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-sageGreen-500 tracking-wider bg-sageGreen-100 px-2.5 py-1 rounded-full">Seafood Choice</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 transition-colors mt-3">Pan-Seared Lemon Salmon</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2 leading-relaxed">Fresh Atlantic salmon filet with lemon dill herb reduction and wild rice pilaf.</p>
+                            </div>
+
+                            <div @click="openModal({ title: 'Tuscan Stuffed Chicken', category: 'Plated Main', desc: 'Boneless chicken breast stuffed with spinach, sun-dried tomatoes, and fontina cheese topped with white wine sauce.', tags: ['Customizable'], img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-dustyRose-400 tracking-wider bg-dustyRose-100 px-2.5 py-1 rounded-full">Poultry Choice</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 transition-colors mt-3">Tuscan Stuffed Chicken</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2 leading-relaxed">Stuffed with spinach, sun-dried tomatoes, and fontina cheese in velvety cream sauce.</p>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="activeTab === 'buffet'">
+                        <div class="contents">
+                            <div @click="openModal({ title: 'Country Elegance Buffet', category: 'Buffet Package', desc: 'Includes Roasted Chicken Breast in White Wine Herb Cream, Honey Glazed Ham, Gourmet Four-Cheese Macaroni, Green Bean Almondine, and Fresh Garden Salad.', tags: ['High Capacity', 'Crowd Pleaser'], img: 'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-dustyRose-500 tracking-wider bg-dustyRose-100 px-2.5 py-1 rounded-full">Most Popular</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 transition-colors mt-3">The Country Elegance Buffet</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2 leading-relaxed">Dual entree buffet featuring white wine chicken breast, honey glazed ham, and artisanal sides.</p>
+                            </div>
+
+                            <div @click="openModal({ title: 'Grand Harvest Reserve Buffet', category: 'Buffet Package', desc: 'Carved Beef Tenderloin with Horseradish Cream, Herb Roasted Pork Loin, Rosemary Fingerling Potatoes, Roasted Mediterranean Vegetables, and Caesar Salad.', tags: ['Premium'], img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-sageGreen-500 tracking-wider bg-sageGreen-100 px-2.5 py-1 rounded-full">Signature Choice</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 transition-colors mt-3">Grand Harvest Reserve Buffet</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2 leading-relaxed">Carved tenderloin station, roasted pork loin, fingerling potatoes, and fresh warm artisan rolls.</p>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="activeTab === 'hors'">
+                        <div class="contents">
+                            <div @click="openModal({ title: 'Mini Crab Cakes', category: 'Cocktail Hour', desc: 'Pan-seared lump crab cakes drizzled with citrus remoulade sauce.', tags: ['Seafood'], img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-dustyRose-400 tracking-wider bg-dustyRose-100 px-2.5 py-1 rounded-full">Cocktail Favorite</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 mt-3">Mini Lump Crab Cakes</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2">Crispy pan-seared crab cakes served with delicate lemon remoulade.</p>
+                            </div>
+
+                            <div @click="openModal({ title: 'Caprese Skewers', category: 'Cocktail Hour', desc: 'Fresh cherry tomatoes, mozzarella pearls, and fresh basil drizzled with dark balsamic glaze.', tags: ['Vegetarian', 'Gluten-Free'], img: 'https://images.unsplash.com/photo-1592417817098-8f3d6ef23a81?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-sageGreen-500 tracking-wider bg-sageGreen-100 px-2.5 py-1 rounded-full">Vegetarian</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 mt-3">Caprese Basil Skewers</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2">Mozzarella pearls, ripe tomatoes, basil, and aged balsamic glaze.</p>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="activeTab === 'desserts'">
+                        <div class="contents">
+                            <div @click="openModal({ title: 'Gourmet Mini Dessert Bar', category: 'Dessert Station', desc: 'Assorted French macarons, mini fruit tartlets, dark chocolate mousse cups, and chocolate covered strawberries.', tags: ['Sweet Treats'], img: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-dustyRose-400 tracking-wider bg-dustyRose-100 px-2.5 py-1 rounded-full">Dessert Station</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 mt-3">Gourmet Mini Dessert Bar</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2">French macarons, fruit tartlets, mousse cups, and berries.</p>
+                            </div>
+
+                            <div @click="openModal({ title: 'Late Night Comfort Station', category: 'Late Night', desc: 'Mini gourmet beef sliders, warm pretzel bites with craft cheese sauce, and donut holes.', tags: ['Guest Favorite'], img: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=600&q=80' })" 
+                                 class="glass-card p-6 rounded-3xl border border-dustyRose-200 hover:border-dustyRose-400 cursor-pointer transition-all hover:-translate-y-1 shadow-sm hover:shadow-soft-petal group">
+                                <span class="text-[10px] uppercase font-bold text-dustyRose-400 tracking-wider bg-dustyRose-100 px-2.5 py-1 rounded-full">Late Night Snacks</span>
+                                <h3 class="font-serif text-2xl text-softCharcoal-900 group-hover:text-dustyRose-500 mt-3">Late Night Comfort Bites</h3>
+                                <p class="text-xs text-softCharcoal-700 mt-2">Mini beef sliders, warm pretzel bites, and cinnamon donuts.</p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: COST ESTIMATOR PAGE -->
+        <div x-show="currentRoute === 'estimator'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="py-16 bg-sageGreen-50/50">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                <div class="text-center max-w-2xl mx-auto space-y-3">
+                    <span class="text-xs uppercase tracking-widest text-sageGreen-500 font-semibold">Budget Transparency</span>
+                    <h2 class="font-serif text-4xl sm:text-6xl text-softCharcoal-900 font-light">Interactive Budget Calculator</h2>
+                    <p class="text-softCharcoal-700 text-sm">
+                        Adjust guest slider and service preferences to generate an instant package estimate.
+                    </p>
+                </div>
+
+                <div class="glass-rose p-6 sm:p-10 rounded-3xl shadow-soft-petal grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+                     x-effect="
+                        let base = 36;
+                        if(costCalc.service === 'plated') base = 48;
+                        if(costCalc.service === 'buffet') base = 40;
+                        if(costCalc.service === 'cocktail') base = 34;
+
+                        if(costCalc.tier === 'signature') base += 12;
+                        if(costCalc.tier === 'grand') base += 22;
+
+                        let totalVal = base * costCalc.guests;
+                        if(costCalc.bar) totalVal += (14 * costCalc.guests);
+                        if(costCalc.desserts) totalVal += (6 * costCalc.guests);
+
+                        costCalc.total = totalVal;
+                     ">
+
+                    <!-- Controls -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-800">Estimated Guest Count</label>
+                                <span class="font-serif text-2xl font-normal text-dustyRose-500" x-text="costCalc.guests + ' Guests'">120 Guests</span>
+                            </div>
+                            <input type="range" min="30" max="350" step="5" x-model="costCalc.guests" class="w-full h-2 bg-dustyRose-100 rounded-lg appearance-none cursor-pointer accent-dustyRose-400">
+                        </div>
+
+                        <div>
+                            <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-800 block mb-2">Service Style</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button @click="costCalc.service = 'buffet'" :class="costCalc.service === 'buffet' ? 'bg-dustyRose-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="py-2.5 px-3 rounded-xl text-xs font-semibold transition-all">
+                                    Buffet
+                                </button>
+                                <button @click="costCalc.service = 'plated'" :class="costCalc.service === 'plated' ? 'bg-dustyRose-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="py-2.5 px-3 rounded-xl text-xs font-semibold transition-all">
+                                    Plated
+                                </button>
+                                <button @click="costCalc.service = 'cocktail'" :class="costCalc.service === 'cocktail' ? 'bg-dustyRose-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="py-2.5 px-3 rounded-xl text-xs font-semibold transition-all">
+                                    Cocktail
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-800 block mb-2">Menu Tier</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button @click="costCalc.tier = 'deluxe'" :class="costCalc.tier === 'deluxe' ? 'bg-sageGreen-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="py-2.5 px-3 rounded-xl text-xs font-semibold transition-all">
+                                    Classic
+                                </button>
+                                <button @click="costCalc.tier = 'signature'" :class="costCalc.tier === 'signature' ? 'bg-sageGreen-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="py-2.5 px-3 rounded-xl text-xs font-semibold transition-all">
+                                    Signature
+                                </button>
+                                <button @click="costCalc.tier = 'grand'" :class="costCalc.tier === 'grand' ? 'bg-sageGreen-400 text-white' : 'bg-white text-softCharcoal-800 border border-dustyRose-200'" class="py-2.5 px-3 rounded-xl text-xs font-semibold transition-all">
+                                    Grand Luxury
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <label class="flex items-center space-x-2 text-xs font-semibold text-softCharcoal-800 cursor-pointer">
+                                <input type="checkbox" x-model="costCalc.bar" class="rounded text-dustyRose-400 focus:ring-dustyRose-300">
+                                <span>Coffee & Beverage Service (+$14/pp)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-xs font-semibold text-softCharcoal-800 cursor-pointer">
+                                <input type="checkbox" x-model="costCalc.desserts" class="rounded text-dustyRose-400 focus:ring-dustyRose-300">
+                                <span>Gourmet Dessert Display (+$6/pp)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-dustyRose-200 text-center space-y-4 shadow-sm">
+                        <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold block">Estimated Package Price</span>
+                        <div class="font-serif text-4xl sm:text-5xl font-light text-softCharcoal-900" x-text="'$' + costCalc.total.toLocaleString()"></div>
+                        <p class="text-[11px] text-softCharcoal-500 italic">
+                            Approx. <span font-semibold x-text="'$' + Math.round(costCalc.total / costCalc.guests) + ' per guest'"></span>. Includes servers, setup, and cleanup.
+                        </p>
+                        <button @click="navigate('contact')" class="block w-full py-3.5 bg-dustyRose-400 hover:bg-dustyRose-500 text-white rounded-full text-xs font-semibold uppercase tracking-wider transition-all shadow-soft-petal">
+                            Request Official Date Quote
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: REVIEWS / LOVE STORIES PAGE -->
+        <div x-show="currentRoute === 'reviews'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="py-16 bg-almond-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold">Bride & Groom Feedback</span>
+                    <h2 class="font-serif text-4xl sm:text-6xl text-softCharcoal-900 font-light">Real Wedding Love Stories</h2>
+                    <p class="text-softCharcoal-700 text-sm">Read what couples throughout Northwest Ohio and Indiana have to say about Grant's Catering.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-8 rounded-3xl border border-dustyRose-200 shadow-sm space-y-4 relative">
+                        <div class="text-dustyRose-400 text-sm space-x-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-xs sm:text-sm text-softCharcoal-700 leading-relaxed italic">
+                            "Grant’s Catering exceeded every expectation! The rosemary prime rib was melted perfection and our 180 guests couldn't stop talking about the food."
+                        </p>
+                        <div class="pt-4 border-t border-dustyRose-100">
+                            <p class="font-serif text-lg font-semibold text-softCharcoal-900">Sarah & Mark Miller</p>
+                            <p class="text-[10px] text-dustyRose-400 uppercase tracking-wider font-semibold">Married in Antwerp, OH</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-dustyRose-200 shadow-sm space-y-4 relative">
+                        <div class="text-dustyRose-400 text-sm space-x-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-xs sm:text-sm text-softCharcoal-700 leading-relaxed italic">
+                            "From our initial tasting session to the late-night slider bar, the team was warm, professional, and attentive. Unforgettable experience!"
+                        </p>
+                        <div class="pt-4 border-t border-dustyRose-100">
+                            <p class="font-serif text-lg font-semibold text-softCharcoal-900">Emily & David Ross</p>
+                            <p class="text-[10px] text-dustyRose-400 uppercase tracking-wider font-semibold">Fort Wayne Reception</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-dustyRose-200 shadow-sm space-y-4 relative">
+                        <div class="text-dustyRose-400 text-sm space-x-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-xs sm:text-sm text-softCharcoal-700 leading-relaxed italic">
+                            "The soft presentation and warm service made our garden wedding feel so luxurious. The salmon was cooked to absolute perfection."
+                        </p>
+                        <div class="pt-4 border-t border-dustyRose-100">
+                            <p class="font-serif text-lg font-semibold text-softCharcoal-900">Jessica & Tyler Vance</p>
+                            <p class="text-[10px] text-dustyRose-400 uppercase tracking-wider font-semibold">Defiance, OH Wedding</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 6: INQUIRE / CONTACT PAGE -->
+        <div x-show="currentRoute === 'contact'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="py-16 bg-almond-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                <div class="text-center max-w-3xl mx-auto space-y-3">
+                    <span class="text-xs uppercase tracking-widest text-dustyRose-400 font-semibold">Dedicated Inquiry Page</span>
+                    <h2 class="font-serif text-4xl sm:text-6xl text-softCharcoal-900 font-light">Inquire & Book Tasting</h2>
+                    <p class="text-softCharcoal-700 text-sm">Submit your wedding details below to reserve date availability.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    
+                    <!-- Direct Info Side -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="glass-card p-8 rounded-3xl border border-dustyRose-200 space-y-6">
+                            <h3 class="font-serif text-2xl text-softCharcoal-900">Grant's Catering Office</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa-solid fa-location-dot text-dustyRose-400 mt-1"></i>
+                                    <div>
+                                        <p class="text-xs uppercase font-bold text-softCharcoal-500">Address</p>
+                                        <p class="text-sm font-semibold text-softCharcoal-900">503 E Canal St, Antwerp, OH 45813</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa-solid fa-phone text-dustyRose-400 mt-1"></i>
+                                    <div>
+                                        <p class="text-xs uppercase font-bold text-softCharcoal-500">Phone</p>
+                                        <a href="tel:4192582233" class="text-sm font-semibold text-softCharcoal-900 hover:text-dustyRose-500">419-258-2233</a>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa-solid fa-envelope text-dustyRose-400 mt-1"></i>
+                                    <div>
+                                        <p class="text-xs uppercase font-bold text-softCharcoal-500">Email</p>
+                                        <a href="mailto:info@grantscatering.com" class="text-sm font-semibold text-softCharcoal-900 hover:text-dustyRose-500">info@grantscatering.com</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-dustyRose-100 flex gap-3">
+                                <a href="https://www.facebook.com/weddingdreams12" target="_blank" class="px-4 py-2 bg-white rounded-full border border-dustyRose-200 text-xs font-semibold text-softCharcoal-800 hover:bg-dustyRose-400 hover:text-white transition-all">
+                                    <i class="fa-brands fa-facebook mr-1"></i> Facebook
+                                </a>
+                                <a href="https://www.instagram.com/grantscatering_weddings/" target="_blank" class="px-4 py-2 bg-white rounded-full border border-dustyRose-200 text-xs font-semibold text-softCharcoal-800 hover:bg-dustyRose-400 hover:text-white transition-all">
+                                    <i class="fa-brands fa-instagram mr-1"></i> Instagram
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comprehensive Form -->
+                    <div class="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-dustyRose-200 shadow-soft-petal">
+                        <form @submit.prevent="showToast('Inquiry submitted! We have sent a confirmation email to info@grantscatering.com')" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Full Name</label>
+                                    <input type="text" required placeholder="Bride / Groom Name" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                </div>
+                                <div>
+                                    <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Email Address</label>
+                                    <input type="email" required placeholder="email@domain.com" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Wedding Date</label>
+                                    <input type="date" required class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                </div>
+                                <div>
+                                    <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Estimated Guests</label>
+                                    <input type="number" placeholder="150" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Reception Venue Name & Location</label>
+                                <input type="text" placeholder="e.g. Antwerp Community Center / Outdoor Barn" class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50">
+                            </div>
+
+                            <div>
+                                <label class="text-xs uppercase tracking-wider font-semibold text-softCharcoal-700 block mb-1">Specific Catering Requests or Questions</label>
+                                <textarea rows="4" placeholder="Tell us about dietary needs, preferences, or preferred tasting dates..." class="w-full px-4 py-3 rounded-xl border border-dustyRose-200 focus:outline-none focus:border-dustyRose-400 text-xs bg-almond-50"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-dustyRose-400 hover:bg-dustyRose-500 text-white rounded-full text-xs font-semibold uppercase tracking-wider transition-all shadow-soft-petal">
+                                Submit Formal Inquiry
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Menu Item Modal -->
+    <div x-show="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-softCharcoal-900/40 backdrop-blur-sm" x-cloak>
+        <div @click.away="modalOpen = false" class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-dustyRose-200 shadow-2xl relative space-y-4">
+            <button @click="modalOpen = false" class="absolute top-4 right-4 text-softCharcoal-500 hover:text-softCharcoal-900 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <template x-if="selectedItem">
+                <div>
+                    <img :src="selectedItem.img" :alt="selectedItem.title" class="w-full h-48 object-cover rounded-2xl mb-4">
+                    <span class="text-[10px] uppercase font-bold text-dustyRose-400 tracking-wider bg-dustyRose-100 px-3 py-1 rounded-full" x-text="selectedItem.category"></span>
+                    <h3 class="font-serif text-3xl text-softCharcoal-900 font-light mt-2" x-text="selectedItem.title"></h3>
+                    <p class="text-xs text-softCharcoal-700 leading-relaxed my-3" x-text="selectedItem.desc"></p>
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <template x-for="tag in selectedItem.tags">
+                            <span class="text-[10px] bg-sageGreen-100 text-sageGreen-500 px-2.5 py-1 rounded-full font-medium" x-text="tag"></span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <!-- Custom Soft Toast Notification (Replaces alert) -->
+    <div x-show="notificationOpen" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-8"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-8"
+         class="fixed bottom-6 right-6 z-50 bg-white border border-dustyRose-300 shadow-2xl rounded-2xl p-4 max-w-sm flex items-center space-x-3"
+         x-cloak>
+        <div class="w-8 h-8 bg-dustyRose-100 text-dustyRose-500 rounded-full flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-check text-xs"></i>
+        </div>
+        <p class="text-xs font-medium text-softCharcoal-800" x-text="notificationMessage"></p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-almond-200/70 border-t border-dustyRose-200 py-10 text-center text-xs text-softCharcoal-700 space-y-3">
+        <p class="font-serif text-xl font-light text-softCharcoal-900">GRANT'S CATERING</p>
+        <p>503 E Canal St, Antwerp, OH 45813 • <a href="tel:4192582233" class="hover:underline">419-258-2233</a> • <a href="mailto:info@grantscatering.com" class="hover:underline">info@grantscatering.com</a></p>
+        
+        <div class="flex justify-center space-x-6 pt-2">
+            <button @click="navigate('home')" class="hover:text-dustyRose-500">Home</button>
+            <button @click="navigate('story')" class="hover:text-dustyRose-500">Our Craft</button>
+            <button @click="navigate('menus')" class="hover:text-dustyRose-500">Menus</button>
+            <button @click="navigate('estimator')" class="hover:text-dustyRose-500">Estimator</button>
+            <button @click="navigate('reviews')" class="hover:text-dustyRose-500">Love Stories</button>
+            <button @click="navigate('contact')" class="hover:text-dustyRose-500">Contact</button>
+        </div>
+
+        <div class="flex justify-center space-x-4 pt-2">
+            <a href="https://www.facebook.com/weddingdreams12" target="_blank" class="hover:text-dustyRose-500"><i class="fa-brands fa-facebook"></i> Facebook</a>
+            <a href="https://www.instagram.com/grantscatering_weddings/" target="_blank" class="hover:text-dustyRose-500"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        </div>
+        <p class="text-[10px] text-softCharcoal-500 pt-4">© 2026 Grant's Catering. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
